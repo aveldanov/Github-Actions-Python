@@ -26,8 +26,13 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install flake8 pytest fastapi httpx
+        pip install fastapi httpx pytest flake8
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+
+    - name: Verify correct `TestClient` import
+      run: |
+        # Ensure `TestClient` is imported from `fastapi.testclient`
+        grep -q "from fastapi.testclient import TestClient" main_test.py || (echo "TestClient import issue!" && exit 1)
 
     - name: Lint with flake8
       run: |
