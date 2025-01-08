@@ -29,10 +29,12 @@ jobs:
         pip install fastapi httpx pytest flake8
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
 
-    - name: Verify correct `TestClient` import
+    - name: Verify `TestClient` import source
       run: |
-        # Ensure `TestClient` is imported from `fastapi.testclient`
-        grep -q "from fastapi.testclient import TestClient" main_test.py || (echo "TestClient import issue!" && exit 1)
+        # Ensure TestClient is imported from fastapi.testclient
+        if ! grep -q "from fastapi.testclient import TestClient" main_test.py; then
+          echo "TestClient must be imported from fastapi.testclient" && exit 1
+        fi
 
     - name: Lint with flake8
       run: |
